@@ -1,0 +1,54 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for roles/wordpress
+- name: update cache
+  ansible.builtin.apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: download wordpress
+  get_url:
+    url: https://wordpress.org/latest.tar.gz
+    dest: /tmp/wordpress.tar.gz
+    mode: '0644'
+
+- name: extract wordpress
+  unarchive:
+    src: /tmp/wordpress.tar.gz
+    dest: "{{wordpress_dir}}"
+    remote_src: yes
+    creates: "{{ wordpress_dir }}/wp-settings.php"
+
+- name: create wp-config.php file
+  copy:
+    src: '{{wordpress_dir}}/wp-config-sample.php'
+    dest: '{{wordpress_dir}}/wp-config.php'
+    remote_src: yes
+    force: no
+
+- name: set database name
+  replace: 
+    path: '{{wordpress_dir}}/wp-config.php'
+    regexp: 'database_name_here'
+    replace: '{{db_name}}'
+
+- name: set database username
+  replace: 
+    path: '{{wordpress_dir}}/wp-config.php'
+    regexp: 'username_here'
+    replace: '{{db_user}}'
+  
+- name: set database password
+  replace:
+    path: '{{wordpress_dir}}/wp-config.php'
+    regexp: 'password_here'
+    replace: '{{db_password}}'
+
+- name: set wordpress ownership
+  file: 
+    path: '{{wordpress_dir}}'
+    owner: www-data
+    group: www-data
+    recurse: yes
+
+

@@ -1,0 +1,33 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for roles/mysql
+# - vars_files:
+#     - ../vars/main.yml
+
+- name: update cache
+  ansible.builtin.apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: install mysql-server
+  apt:
+    name: mysql-server
+    state: present
+
+- name: start and enable mysql
+  service: 
+    name: mysql
+    state: started
+    enabled: true
+
+- name: create mysql database
+  command:
+    cmd: mysql -e "CREATE DATABASE IF NOT EXISTS {{db_name}};"
+
+- name: create mysql user
+  command: 
+    cmd: mysql -e "CREATE USER IF NOT EXISTS '{{db_user}}'@'localhost' IDENTIFIED BY '{{db_password}}';"
+
+- name: grant db permissions
+  command:
+    cmd: mysql -e "GRANT ALL PRIVILEGES ON {{db_name}}.* TO '{{db_user}}'@'localhost';"

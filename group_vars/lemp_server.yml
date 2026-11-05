@@ -1,0 +1,8 @@
+db_name: wordpress
+db_user: wordpress
+db_password: wordpress
+
+  # wordpress installation directive
+wordpress_dir: /var/www/html/wordpress
+
+php_version: 8.5

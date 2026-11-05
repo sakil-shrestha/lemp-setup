@@ -1,0 +1,162 @@
+---
+- name: Deploy wordpress using lemp stack 
+  hosts: devops-server
+  become: true
+  # vars_files:
+  #   - vars.yml
+
+  roles:
+    - nginx
+    - mysql
+    - php
+    - wordpress
+
+  # tasks:
+   # STEP 1: Update Ubuntu packages
+    # - name: update cache
+    #   ansible.builtin.apt:
+    #     update_cache: yes
+    #     cache_valid_time: 3600
+
+    # STEP 2: Install Nginx, MySQL and PHP
+    # - name: install lemp stack
+    #   ansible.builtin.apt:
+    #     name:
+    #       - mysql-server
+          
+    #     state: present
+
+        # STEP 3: Start and enable Nginx
+    # - name: start and enable nginx
+    #   ansible.builtin.service:
+    #     name: nginx
+    #     state: started
+    #     enabled: true
+        
+       # STEP 4: Start and enable MySQL
+    # - name: start and enable mysql
+    #   ansible.builtin.service:
+    #     name: mysql
+    #     state: started
+    #     enabled: true
+
+     # STEP 5: Start and enable PHP-FPM
+    # - name: start and enable php-fpmm
+    #   ansible.builtin.service:
+    #     name: php{{php_version}}-fpm
+    #     state: started
+    #     enabled: true
+
+    # STEP 6: Create MySQL database
+    # - name: create mysql database
+    #   ansible.builtin.command:
+    #     cmd: mysql -e "CREATE DATABASE IF NOT EXISTS {{db_name}};"
+        # or
+      # command:
+      #  argv:
+      #   - mysql
+      #   - e
+      #   - "CREATE DATABASE IF NOT EXISTS {{db_name}};"  
+
+
+    # STEP 7: Create MySQL user and password
+    # - name: create mysql user
+    #   ansible.builtin.command:
+    #     cmd: mysql -e "CREATE USER IF NOT EXISTS '{{db_user}}'@'localhost' IDENTIFIED BY '{{db_password}}';"
+
+    # STEP 8: Grant database permissions
+    # - name: grant db permissions
+    #   command:
+    #     cmd: mysql -e "GRANT ALL PRIVILEGES ON {{db_name}}.* TO '{{db_user}}'@'localhost';"
+     
+    # STEP 9: Download WordPress
+    # - name: Download WordPress
+    #   get_url:
+    #     url: https://wordpress.org/latest.tar.gz
+    #     dest: /tmp/wordpress.tar.gz
+    #     mode: '0644'
+
+     # STEP 10: Extract WordPress
+    # - name: extract wordpress
+    #   ansible.builtin.unarchive:
+    #     src: /tmp/wordpress.tar.gz
+    #     dest: "{{wordpress_dir}}"
+    #     remote_src: yes
+    #     creates: "{{ wordpress_dir }}/wp-settings.php"
+    
+       # STEP 11: Create WordPress configuration file
+    # - name: create wp-config.php file
+    #   ansible.builtin.copy:
+    #     src: "{{wordpress_dir}}/wp-config-sample.php"
+    #     dest: "{{wordpress_dir}}/wp-config.php"
+    #     remote_src: yes
+    #     force: no
+    
+     # STEP 12: Configure database name
+    # - name: Set database name
+    #   replace:
+    #     path: "{{ wordpress_dir }}/wp-config.php"
+    #     regexp: "database_name_here"
+    #     replace: "{{ db_name }}"
+
+     # STEP 13: Configure database username
+    # - name: set database username
+    #   ansible.builtin.replace:
+    #     path: "{{wordpress_dir}}/wp-config.php"
+    #     regexp: "username_here"
+    #     replace: "{{db_user}}"
+
+     # STEP 14: Configure database password
+    # - name: Set database password
+    #   replace:
+    #     path: "{{ wordpress_dir }}/wp-config.php"
+    #     regexp: "password_here"
+    #     replace: "{{ db_password }}"
+
+     # STEP 15: Set WordPress ownership
+    # - name: set wordpress ownership
+    #   ansible.builtin.file:
+    #     path: "{{wordpress_dir}}"
+    #     owner: www-data
+    #     group: www-data
+    #     recurse: yes  
+
+     # STEP 16: Configure Nginx
+    # - name: Create Nginx configuration
+    #   ansible.builtin.copy:
+    #     dest: /etc/nginx/sites-enabled/wordpress
+    #     content: |
+    #       server {
+    #           listen 80;
+    #           server_name _;
+
+    #           root {{ wordpress_dir }};
+    #           index index.php index.html;
+
+    #           location / {
+    #               try_files $uri $uri/ /index.php?$args;
+    #           }
+
+    #           location ~ \.php$ {
+                 
+    #               include snippets/fastcgi-php.conf;
+    #               fastcgi_pass unix:/run/php/php{{ php_version }}-fpm.sock;
+    #           }
+
+    #           location ~ /\. {
+    #               deny all;
+    #           }
+    #       }
+     
+
+       # STEP 17: Remove default Nginx site
+    # - name: Remove default Nginx site
+    #   file:
+    #     path: /etc/nginx/sites-enabled/default
+    #     state: absent
+      
+
+ 
+
+
+    

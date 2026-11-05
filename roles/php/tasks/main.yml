@@ -1,0 +1,36 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for roles/php
+
+- name: update cache
+  ansible.builtin.apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+
+- name: install php and required extensions
+  # vars_files:
+  #   - ../vars/main.yml
+  apt:
+    name:
+      - php{{php_version}}-fpm
+      - php{{php_version}}-mysql
+      - php{{php_version}}-curl
+      - php{{php_version}}-gd
+      - php{{php_version}}-mbstring
+      - php{{php_version}}-intl
+      - php{{php_version}}-bcmath
+      - php{{php_version}}-xml
+      - php{{php_version}}-zip
+    state: present
+  tags: [never,php]
+
+- name: start and enable php-fpm
+  service: 
+    name: php{{php_version}}-fpm
+    state: started
+    enabled: true
+  tags: [never,php]
+  
+
+
